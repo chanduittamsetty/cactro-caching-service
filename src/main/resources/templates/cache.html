@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cache API Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { padding: 8px; margin: 5px; }
+        .response { margin-top: 15px; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+<h1>Cache API Interface</h1>
+
+<!-- Create Cache Form -->
+<h3>Create Cache Item</h3>
+<input type="text" id="createKey" placeholder="Key" required>
+<input type="text" id="createValue" placeholder="Value" required>
+<button onclick="createCache()">Create Cache</button>
+
+<!-- Get Cache Form -->
+<h3>Get Cache Item</h3>
+<input type="text" id="getKey" placeholder="Key" required>
+<button onclick="getCache()">Get Cache</button>
+
+<!-- Delete Cache Form -->
+<h3>Delete Cache Item</h3>
+<input type="text" id="deleteKey" placeholder="Key" required>
+<button onclick="deleteCache()">Delete Cache</button>
+
+<!-- Response Display -->
+<div class="response" id="responseArea"></div>
+
+<script>
+    const API_BASE_URL = "/cache";
+
+    function createCache() {
+        const key = document.getElementById("createKey").value;
+        const value = document.getElementById("createValue").value;
+
+        fetch(API_BASE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key, value })
+        })
+        .then(response => response.json())
+        .then(data => displayResponse(data))
+        .catch(error => displayResponse(error));
+    }
+
+    function getCache() {
+        const key = document.getElementById("getKey").value;
+
+        fetch(`${API_BASE_URL}/${key}`)
+            .then(response => response.json())
+            .then(data => displayResponse(data))
+            .catch(error => displayResponse(error));
+    }
+
+    function deleteCache() {
+        const key = document.getElementById("deleteKey").value;
+
+        fetch(`${API_BASE_URL}/${key}`, {
+            method: "DELETE"
+        })
+        .then(response => response.json())
+        .then(data => displayResponse(data))
+        .catch(error => displayResponse(error));
+    }
+
+    function displayResponse(data) {
+        const responseArea = document.getElementById("responseArea");
+        responseArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+</script>
+</body>
+</html>
